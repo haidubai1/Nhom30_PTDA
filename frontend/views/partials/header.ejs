@@ -1,0 +1,27 @@
+<div class="top">
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="Tin Tức HaUI, về trang chủ"><%- include('brand') %></a>
+    <form class="search" action="/" method="get" role="search">
+      <input type="search" name="q" value="<%= typeof q !== 'undefined' ? q : '' %>" placeholder="Tìm bài viết…" aria-label="Tìm bài viết">
+      <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+    </form>
+    <div class="bar-actions">
+      <% if (currentUser) { %>
+        <a class="btn btn-ghost" href="/quan-tri">Khu quản trị</a>
+        <form action="/auth/logout" method="post" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-ghost" type="submit">Đăng xuất</button></form>
+      <% } else { %>
+        <a class="btn btn-primary" href="/auth?mode=login">Đăng nhập</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+<% if (typeof categories !== 'undefined' && categories && categories.length) { const act = (typeof activeSlug !== 'undefined') ? activeSlug : null; %>
+<div class="catbar"><nav class="cats wrap" aria-label="Chuyên mục">
+  <a href="/" class="<%= !act ? 'on' : '' %>">Tất cả</a>
+  <% categories.forEach(function (c) { %><a href="/?c=<%= c.slug %>" class="<%= act === c.slug ? 'on' : '' %>"><%= c.name %></a><% }) %>
+</nav></div>
+<% } %>
+</div>
+<main class="wrap">
+<%- include('flash') %>

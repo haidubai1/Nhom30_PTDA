@@ -1,0 +1,6 @@
+<%- include('../partials/head') %>
+<body>
+<%- include('../partials/header') %>
+<section class="auth"><h1>500</h1><p><%= title || 'Đã xảy ra lỗi' %></p><p><a class="btn btn-primary" href="/">Về trang chủ</a></p>
+<% if (typeof error !== 'undefined' && error) { %><pre><%= error.stack %></pre><% } %></section>
+<%- include('../partials/footer') %>

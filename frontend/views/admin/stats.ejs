@@ -1,0 +1,28 @@
+<%- include('../partials/admin-start') %>
+<h1>Thống kê</h1>
+<div class="tabs">
+  <% Object.keys(ranges).forEach(function (k) { %><a class="<%= range === k ? 'on' : '' %>" href="/quan-tri/thong-ke?range=<%= k %>&ar=<%= articleRange %>"><%= ranges[k].label %></a><% }) %>
+</div>
+<p class="hint">Tổng lượt xem trong kỳ: <b><%= ui.number(series.total) %></b> (từ <%= series.from %> đến <%= series.to %>).</p>
+<% const W = 720, H = 260, P = 34, n = series.buckets.length, bw = (W - P * 2) / n; %>
+<svg class="chart" viewBox="0 0 <%= W %> <%= H %>" role="img" aria-label="Biểu đồ lượt xem theo thời gian">
+  <line x1="<%= P %>" y1="<%= H - P %>" x2="<%= W - P %>" y2="<%= H - P %>" stroke="currentColor" opacity=".25"/>
+  <% series.buckets.forEach(function (b, i) { const h = Math.round((b.value / max) * (H - P * 2)); const x = P + i * bw + bw * 0.15; %>
+    <rect x="<%= x.toFixed(1) %>" y="<%= H - P - h %>" width="<%= (bw * 0.7).toFixed(1) %>" height="<%= h %>" rx="3" class="bar-rect"><title><%= b.label %>: <%= b.value %> lượt xem</title></rect>
+    <text x="<%= (x + bw * 0.35).toFixed(1) %>" y="<%= H - P + 14 %>" text-anchor="middle" font-size="<%= n > 12 ? 9 : 11 %>"><%= b.label %></text>
+  <% }) %>
+</svg>
+
+<h2>Lượt xem từng bài</h2>
+<div class="tabs">
+  <a class="<%= articleRange === 'all' ? 'on' : '' %>" href="/quan-tri/thong-ke?range=<%= range %>&ar=all">Từ trước đến nay</a>
+  <a class="<%= articleRange === 'week' ? 'on' : '' %>" href="/quan-tri/thong-ke?range=<%= range %>&ar=week">7 ngày</a>
+  <a class="<%= articleRange === 'month' ? 'on' : '' %>" href="/quan-tri/thong-ke?range=<%= range %>&ar=month">30 ngày</a>
+</div>
+<h3>Top 5 bài xem nhiều nhất</h3>
+<ol class="toplist"><% top.forEach(function (a) { %><li><a href="/bai-viet/<%= a.id %>"><%= a.title %></a> — <b><%= ui.number(a.rangeViews) %></b></li><% }) %></ol>
+<div class="table-wrap"><table>
+  <thead><tr><th>Bài viết</th><th>Lượt xem</th></tr></thead>
+  <tbody><% perArticle.forEach(function (a) { %><tr><td><a href="/bai-viet/<%= a.id %>"><%= a.title %></a></td><td><%= ui.number(a.rangeViews) %></td></tr><% }) %></tbody>
+</table></div>
+<%- include('../partials/admin-end') %>

@@ -1,0 +1,12 @@
+<aside class="sidebar" aria-label="Đọc nhiều">
+  <section class="side-box reveal">
+    <h3>Đọc nhiều</h3>
+    <% const hot = (typeof topRead !== 'undefined' && topRead) || []; %>
+    <% if (!hot.length) { %><p class="hint">Chưa có dữ liệu.</p><% } %>
+    <ol class="hot">
+      <% hot.forEach(function (a, i) { %>
+        <li><a href="/bai-viet/<%= a.id %>"><span class="rank"><%= i + 1 %></span><span class="t"><%= a.title %><small><%= ui.number(a.views) %> lượt xem</small></span></a></li>
+      <% }) %>
+    </ol>
+  </section>
+</aside>

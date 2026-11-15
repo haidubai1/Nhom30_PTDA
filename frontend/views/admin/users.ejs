@@ -1,0 +1,21 @@
+<%- include('../partials/admin-start') %>
+<div class="row between"><h1>Tài khoản</h1><a class="btn btn-primary" href="/quan-tri/tai-khoan/moi">+ Thêm tài khoản</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Đăng nhập gần nhất</th><th></th></tr></thead>
+  <tbody>
+  <% users.forEach(function (u) { const locked = currentUser.role !== 'manager' && u.role === 'manager'; %>
+    <tr>
+      <td><%= u.display_name %></td><td><%= u.email %></td><td><%= ui.role(u.role) %></td>
+      <td><span class="badge s-<%= u.status === 'locked' ? 'rejected' : 'published' %>"><%= ui.userStatus(u.status) %></span></td>
+      <td><%= ui.dateTime(u.last_login_at) %></td>
+      <td class="actions">
+        <% if (!locked) { %>
+          <a class="btn btn-ghost" href="/quan-tri/tai-khoan/<%= u.id %>/sua">Sửa</a>
+          <% if (Number(u.id) !== Number(currentUser.id)) { %><form method="post" action="/quan-tri/tai-khoan/<%= u.id %>/xoa" class="inline" data-confirm="Xóa tài khoản <%= u.email %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-danger">Xóa</button></form><% } %>
+        <% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table></div>
+<%- include('../partials/admin-end') %>

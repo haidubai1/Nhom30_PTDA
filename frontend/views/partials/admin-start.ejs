@@ -1,0 +1,32 @@
+<%- include('head') %>
+<body class="admin">
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/quan-tri" aria-label="Tin Tức HaUI, về tổng quan"><%- include('brand') %></a>
+    <div class="bar-actions">
+      <span class="who"><%= currentUser.display_name %><%= currentUser.display_name === ui.role(currentUser.role) ? '' : ' · ' + ui.role(currentUser.role) %></span>
+      <a class="btn btn-ghost" href="/">Xem trang đọc</a>
+      <form action="/auth/logout" method="post" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-ghost" type="submit">Đăng xuất</button></form>
+    </div>
+  </div>
+</header>
+<div class="wrap admin-grid">
+  <%
+  const isOn = (href) => {
+    const parts = href.split('?'); const p = parts[0];
+    if (parts[1]) return path === p && typeof view !== 'undefined' && href.endsWith('view=' + view);
+    if (p === '/quan-tri' || p === '/quan-tri/bai-viet/moi') return path === p;
+    return path.indexOf(p) === 0;
+  };
+  const items = [['/quan-tri', 'Tổng quan', true]];
+  items.push(['/quan-tri/bai-viet/moi', 'Viết bài mới', can('write')], ['/quan-tri/bai-viet?view=mine', 'Bài của tôi', can('write')],
+    ['/quan-tri/bai-viet?view=pending', 'Chờ duyệt', can('review')], ['/quan-tri/bai-viet?view=publish', 'Xuất bản', can('publish')],
+    ['/quan-tri/bai-viet?view=all', 'Tất cả bài viết', currentUser.role === 'manager'], ['/quan-tri/chuyen-muc', 'Chuyên mục', can('cats')],
+    ['/quan-tri/binh-luan', 'Bình luận', can('comments')], ['/quan-tri/thong-ke', 'Thống kê', can('stats')],
+    ['/quan-tri/tai-khoan', 'Tài khoản', can('accs')], ['/quan-tri/phan-quyen', 'Phân quyền', currentUser.role === 'manager']);
+%>
+  <nav class="side" aria-label="Menu quản trị">
+    <% items.forEach(function (it) { if (it[2]) { %><a href="<%= it[0] %>" class="<%= isOn(it[0]) ? 'on' : '' %>"><%= it[1] %></a><% } }) %>
+  </nav>
+  <main class="panel">
+    <%- include('flash') %>

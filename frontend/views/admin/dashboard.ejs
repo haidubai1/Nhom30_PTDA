@@ -1,0 +1,7 @@
+<%- include('../partials/admin-start') %>
+<h1>Tổng quan</h1>
+<p class="hint">Xin chào <%= currentUser.display_name %> (<%= ui.role(currentUser.role) %>).<% if (currentUser.role === 'manager') { %> Quản lý không viết bài; chỉ duyệt, xuất bản và quản trị hệ thống.<% } %></p>
+<div class="cards">
+  <% cards.forEach(function (c) { %><a class="stat reveal" href="<%= c.href %>"><b><%= ui.number(c.value) %></b><span><%= c.label %></span></a><% }) %>
+</div>
+<%- include('../partials/admin-end') %>

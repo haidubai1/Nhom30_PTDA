@@ -1,0 +1,11 @@
+<%- include('../partials/admin-start') %>
+<h1>Phân quyền biên tập viên</h1>
+<p class="hint">Biên tập viên luôn có quyền <b><%= PERMISSIONS.write %></b>. Tick để cấp thêm các quyền sau cho <b>tất cả</b> biên tập viên. Quản lý có toàn bộ quyền trừ viết bài.</p>
+<form method="post" action="/quan-tri/phan-quyen" class="stack box">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% grantable.forEach(function (p) { %>
+    <label class="check"><input type="checkbox" name="perm" value="<%= p %>" <%= granted.includes(p) ? 'checked' : '' %>> <%= PERMISSIONS[p] %></label>
+  <% }) %>
+  <button class="btn btn-primary" type="submit">Lưu phân quyền</button>
+</form>
+<%- include('../partials/admin-end') %>

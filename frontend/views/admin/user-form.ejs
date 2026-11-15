@@ -1,0 +1,20 @@
+<%- include('../partials/admin-start') %>
+<h1><%= title %></h1>
+<form method="post" action="<%= target ? '/quan-tri/tai-khoan/' + target.id : '/quan-tri/tai-khoan' %>" class="stack">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Họ tên <input name="displayName" maxlength="120" value="<%= target ? target.display_name : '' %>" required></label>
+  <label>Email <input type="email" name="email" value="<%= target ? target.email : '' %>" required></label>
+  <label>Mật khẩu <%= target ? '(bỏ trống nếu không đổi)' : '(từ 6 ký tự)' %> <input type="password" name="password" minlength="6" autocomplete="new-password" <%= target ? '' : 'required' %>></label>
+  <% if (currentUser.role === 'manager') { %>
+  <label>Vai trò
+    <select name="role"><option value="editor" <%= target && target.role === 'editor' ? 'selected' : '' %>>Biên tập viên</option><option value="manager" <%= target && target.role === 'manager' ? 'selected' : '' %>>Quản lý</option></select>
+  </label>
+  <% } %>
+  <% if (target) { %>
+  <label>Trạng thái
+    <select name="status"><option value="active" <%= target.status === 'active' ? 'selected' : '' %>>Hoạt động</option><option value="locked" <%= target.status === 'locked' ? 'selected' : '' %>>Khóa</option></select>
+  </label>
+  <% } %>
+  <div class="row"><button class="btn btn-primary" type="submit">Lưu</button><a class="btn btn-ghost" href="/quan-tri/tai-khoan">Hủy</a></div>
+</form>
+<%- include('../partials/admin-end') %>

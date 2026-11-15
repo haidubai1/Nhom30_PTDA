@@ -1,0 +1,23 @@
+<%- include('../partials/admin-start') %>
+<h1><%= title %></h1>
+<div class="tabs">
+  <% Object.keys(views).forEach(function (k) { %><% if ((k === 'mine' && can('write')) || (k === 'pending' && can('review')) || (k === 'publish' && can('publish')) || (k === 'all' && currentUser.role === 'manager')) { %><a class="<%= view === k ? 'on' : '' %>" href="/quan-tri/bai-viet?view=<%= k %>"><%= views[k] %></a><% } %><% }) %>
+</div>
+<% if (!rows.length) { %><p class="empty">Không có bài viết nào.</p><% } else { %>
+<div class="table-wrap"><table>
+  <thead><tr><th>Tiêu đề</th><th>Chuyên mục</th><th>Tác giả</th><th>Trạng thái</th><th>Cập nhật</th><th></th></tr></thead>
+  <tbody>
+  <% rows.forEach(function (r) { const a = r.a; %>
+    <tr>
+      <td><a href="/quan-tri/bai-viet/<%= a.id %>"><%= a.title %></a><% if (a.status === 'rejected' && a.reject_reason) { %><br><small class="bad">Lý do: <%= a.reject_reason %></small><% } %></td>
+      <td><%= a.category.name %></td>
+      <td><%= a.author.display_name %></td>
+      <td><span class="badge s-<%= a.status %>"><%= ui.articleStatus(a.status) %></span><% if (a.status === 'scheduled') { %><br><small><%= ui.dateTime(a.publish_at) %></small><% } %></td>
+      <td><%= ui.dateTime(a.updated_at) %></td>
+      <td class="actions"><a class="btn btn-ghost" href="/quan-tri/bai-viet/<%= a.id %>">Chi tiết</a></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table></div>
+<% } %>
+<%- include('../partials/admin-end') %>

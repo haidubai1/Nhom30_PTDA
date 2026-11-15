@@ -1,0 +1,40 @@
+<%- include('partials/head') %>
+<body>
+<%- include('partials/header') %>
+<% if (articles.length) { %>
+<div class="ticker" role="region" aria-label="Tin mới">
+  <span class="ticker-label">Tin mới</span>
+  <div class="ticker-track"><div class="ticker-move">
+    <% [0, 1].forEach(function (k) { articles.slice(0, 6).forEach(function (a) { %><a href="/bai-viet/<%= a.id %>" <%- k ? 'tabindex="-1" aria-hidden="true"' : '' %>><%= a.title %></a><% }) }) %>
+  </div></div>
+</div>
+<% } %>
+<div class="layout">
+  <div class="col">
+    <% if (!articles.length) { %>
+      <p class="empty">Chưa có bài viết nào<%= q ? ' khớp "' + q + '"' : '' %>.</p>
+    <% } else { %>
+      <% const lead = articles[0]; %>
+      <a class="lead reveal" href="/bai-viet/<%= lead.id %>">
+        <div class="media"><%- ui.cover(lead, { w: 960, h: 420 }) %></div>
+        <span class="tag"><%= lead.category.name %></span>
+        <h1><%= lead.title %></h1>
+        <p><%= lead.summary %></p>
+        <small><%= ui.dateTime(lead.published_at) %> · <%= ui.number(lead.views) %> lượt xem</small>
+      </a>
+      <div class="grid">
+        <% articles.slice(1).forEach(function (a, i) { %>
+          <a class="card reveal" style="--d:<%= (i % 2) * 90 %>ms" href="/bai-viet/<%= a.id %>">
+            <div class="media"><%- ui.cover(a) %></div>
+            <span class="tag"><%= a.category.name %></span>
+            <h2><%= a.title %></h2>
+            <p><%= a.summary %></p>
+            <small><%= ui.dateTime(a.published_at) %> · <%= ui.number(a.views) %> lượt xem</small>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+  <%- include('partials/sidebar') %>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,35 @@
+<%- include('partials/head') %>
+<body>
+<%- include('partials/header') %>
+<div class="layout">
+<div class="col">
+<article class="article reveal">
+  <% if (preview) { %><div class="flash flash-warning">Bản xem trước — bài chưa xuất bản (trạng thái: <%= ui.articleStatus(article.status) %>). Độc giả chưa nhìn thấy bài này.</div><% } %>
+  <div class="media hero"><%- ui.cover(article, { w: 960, h: 420 }) %></div>
+  <a class="tag" href="/?c=<%= article.category.slug %>"><%= article.category.name %></a>
+  <h1><%= article.title %></h1>
+  <p class="meta">Tác giả: <%= article.author.display_name %> · <%= ui.dateTime(article.published_at || article.updated_at) %> · <%= ui.number(article.views) %> lượt xem</p>
+  <p class="sapo"><%= article.summary %></p>
+  <% ui.paragraphs(article.content).forEach(function (p) { %><p><%= p %></p><% }) %>
+</article>
+<% if (!preview) { %>
+<section class="comments reveal" id="binh-luan">
+  <h2>Bình luận (<%= comments.length %>)</h2>
+  <% comments.forEach(function (c) { %>
+    <div class="comment"><b><%= c.author_name %></b> <small><%= ui.dateTime(c.created_at) %></small><p><%= c.content %></p></div>
+  <% }) %>
+  <% if (!comments.length) { %><p class="empty">Chưa có bình luận nào được hiển thị.</p><% } %>
+  <form method="post" action="/bai-viet/<%= article.id %>/binh-luan" class="stack">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <h3>Gửi bình luận</h3>
+    <label>Tên của bạn <input name="authorName" maxlength="80" required></label>
+    <label>Nội dung <textarea name="content" rows="3" maxlength="1000" required></textarea></label>
+    <p class="hint">Bình luận sẽ hiển thị sau khi được kiểm duyệt.</p>
+    <button class="btn btn-primary" type="submit">Gửi bình luận</button>
+  </form>
+</section>
+<% } %>
+</div>
+<%- include('partials/sidebar') %>
+</div>
+<%- include('partials/footer') %>

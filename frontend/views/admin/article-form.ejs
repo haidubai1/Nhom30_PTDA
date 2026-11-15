@@ -1,0 +1,17 @@
+<%- include('../partials/admin-start') %>
+<h1><%= title %></h1>
+<form method="post" action="<%= article ? '/quan-tri/bai-viet/' + article.id : '/quan-tri/bai-viet' %>" class="stack wide">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Tiêu đề <input name="title" maxlength="200" value="<%= article ? article.title : '' %>" required></label>
+  <label>Chuyên mục
+    <select name="categoryId" required>
+      <option value="">— Chọn chuyên mục —</option>
+      <% categories.forEach(function (c) { %><option value="<%= c.id %>" <%= article && Number(article.category_id) === Number(c.id) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+    </select>
+  </label>
+  <label>Mô tả ngắn <textarea name="summary" rows="2" maxlength="500" required><%= article ? article.summary : '' %></textarea></label>
+  <label>Nội dung <small>(cách nhau một dòng trống để tách đoạn)</small><textarea name="content" rows="14" required><%= article ? article.content : '' %></textarea></label>
+  <div class="row"><button class="btn btn-primary" type="submit">Lưu bản nháp</button><a class="btn btn-ghost" href="<%= article ? '/quan-tri/bai-viet/' + article.id : '/quan-tri/bai-viet?view=mine' %>">Hủy</a></div>
+  <% if (!categories.length) { %><p class="hint bad">Chưa có chuyên mục nào. Hãy nhờ quản lý tạo chuyên mục trước.</p><% } %>
+</form>
+<%- include('../partials/admin-end') %>

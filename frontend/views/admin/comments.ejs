@@ -1,0 +1,20 @@
+<%- include('../partials/admin-start') %>
+<h1>Bình luận</h1>
+<div class="tabs">
+  <a class="<%= filter === 'pending' ? 'on' : '' %>" href="/quan-tri/binh-luan?status=pending">Chờ duyệt</a>
+  <a class="<%= filter === 'approved' ? 'on' : '' %>" href="/quan-tri/binh-luan?status=approved">Đã hiển thị</a>
+  <a class="<%= filter === 'all' ? 'on' : '' %>" href="/quan-tri/binh-luan?status=all">Tất cả</a>
+</div>
+<% if (!comments.length) { %><p class="empty">Không có bình luận nào.</p><% } %>
+<% comments.forEach(function (c) { %>
+  <div class="comment box">
+    <b><%= c.author_name %></b> <small>· <%= ui.dateTime(c.created_at) %> · <span class="badge s-<%= c.status === 'approved' ? 'published' : 'pending' %>"><%= ui.commentStatus(c.status) %></span></small>
+    <p><%= c.content %></p>
+    <small>Bài: <a href="/bai-viet/<%= c.article.id %>"><%= c.article.title %></a></small>
+    <div class="row">
+      <% if (c.status === 'pending') { %><form method="post" action="/quan-tri/binh-luan/<%= c.id %>/duyet" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-primary">Duyệt</button></form><% } %>
+      <form method="post" action="/quan-tri/binh-luan/<%= c.id %>/xoa" class="inline" data-confirm="Xóa bình luận này?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-danger">Xóa</button></form>
+    </div>
+  </div>
+<% }) %>
+<%- include('../partials/admin-end') %>

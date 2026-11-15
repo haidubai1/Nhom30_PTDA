@@ -1,0 +1,41 @@
+<%- include('../partials/admin-start') %>
+<p><a href="/quan-tri/bai-viet" class="back">← Danh sách bài viết</a></p>
+<h1><%= a.title %></h1>
+<p class="meta"><span class="badge s-<%= a.status %>"><%= ui.articleStatus(a.status) %></span> · <%= a.category.name %> · Tác giả: <%= a.author.display_name %> · Cập nhật <%= ui.dateTime(a.updated_at) %></p>
+<% if (a.status === 'rejected') { %><div class="flash flash-warning"><b>Bài bị từ chối.</b> Lý do: <%= a.reject_reason %>. Hãy sửa bài rồi gửi duyệt lại.</div><% } %>
+<% if (a.status === 'scheduled') { %><div class="flash flash-info">Hẹn xuất bản lúc <b><%= ui.dateTime(a.publish_at) %></b>.</div><% } %>
+<% if (a.status === 'published') { %><div class="flash flash-success">Đã xuất bản lúc <%= ui.dateTime(a.published_at) %> · <%= ui.number(a.views) %> lượt xem · <a href="/bai-viet/<%= a.id %>">Xem trên trang đọc</a></div><% } %>
+<% if (a.reviewer) { %><p class="hint">Người duyệt gần nhất: <%= a.reviewer.display_name %> (<%= ui.dateTime(a.reviewed_at) %>)</p><% } %>
+
+<div class="row actions-bar">
+  <% if (actions.edit) { %><a class="btn btn-ghost" href="/quan-tri/bai-viet/<%= a.id %>/sua">Sửa bài</a><% } %>
+  <% if (actions.submit) { %><form method="post" action="/quan-tri/bai-viet/<%= a.id %>/gui-duyet" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-primary">Gửi duyệt</button></form><% } %>
+  <% if (actions.remove) { %><form method="post" action="/quan-tri/bai-viet/<%= a.id %>/xoa" class="inline" data-confirm="Xóa bài viết này?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-danger">Xóa</button></form><% } %>
+  <% if (actions.review) { %>
+    <form method="post" action="/quan-tri/bai-viet/<%= a.id %>/duyet" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-primary">Duyệt bài</button></form>
+  <% } %>
+  <% if (actions.publish) { %><form method="post" action="/quan-tri/bai-viet/<%= a.id %>/xuat-ban" class="inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-primary">Xuất bản ngay</button></form><% } %>
+  <% if (actions.unpublish) { %><form method="post" action="/quan-tri/bai-viet/<%= a.id %>/go-bai" class="inline" data-confirm="Gỡ bài / hủy lịch?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-danger"><%= a.status === 'scheduled' ? 'Hủy lịch' : 'Gỡ bài' %></button></form><% } %>
+</div>
+
+<% if (actions.review) { %>
+<form method="post" action="/quan-tri/bai-viet/<%= a.id %>/tu-choi" class="stack box">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Từ chối bài — lý do gửi cho tác giả <textarea name="reason" rows="2" maxlength="500" required></textarea></label>
+  <button class="btn btn-danger" type="submit">Từ chối</button>
+</form>
+<% } %>
+<% if (actions.publish) { %>
+<form method="post" action="/quan-tri/bai-viet/<%= a.id %>/hen-gio" class="stack box">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Hẹn giờ xuất bản (giờ Việt Nam) <input type="datetime-local" name="publishAt" required></label>
+  <button class="btn btn-ghost" type="submit">Hẹn giờ</button>
+</form>
+<% } %>
+
+<article class="article preview">
+  <div class="media hero"><%- ui.cover(a, { w: 960, h: 420 }) %></div>
+  <p class="sapo"><%= a.summary %></p>
+  <% ui.paragraphs(a.content).forEach(function (p) { %><p><%= p %></p><% }) %>
+</article>
+<%- include('../partials/admin-end') %>
